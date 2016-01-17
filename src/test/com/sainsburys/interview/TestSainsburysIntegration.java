@@ -3,28 +3,19 @@ package com.sainsburys.interview;
 import com.sainsburys.interview.products.Products;
 import com.sainsburys.interview.utils.SainsburysScraperService;
 import junit.framework.TestCase;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
- *
- * Test class to test the functionality of the Sainsbury Scaper test
+ * Created by rkotecha on 17/01/2016.
  */
-public class SainsburyScraperTest extends TestCase {
+public class TestSainsburysIntegration extends TestCase {
 
 
-    /*
-     * Test case to ensure no products are returned if the URL passed is null
-     */
+    /* integration tests*/
     public void testNullURL() {
         SainsburysScraperService service = new SainsburysScraperService();
         Products products  = service.getProducts(null);
         assertTrue(products == null);
     }
-
 
 
     public void testValidURL() {
@@ -42,7 +33,6 @@ public class SainsburyScraperTest extends TestCase {
         assertTrue(products == null);
 
     }
-
 
 
 }

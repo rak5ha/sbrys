@@ -36,11 +36,10 @@ public class SainsburysScraperService {
         BigDecimal aPrice = null;
 
         // if URL is empty
-
         if (url == null) return null;
 
         try {
-            Document document = getDocument(url);
+            Document document = getDocumentHelper(url);
 
             Element productLister = getProductListElement(document); //getElementById(ProductLister)
 
@@ -60,7 +59,7 @@ public class SainsburysScraperService {
                 //get the linked detailed product page
                 String detailsLink = getLinkedDocumentURL(productInfo);
                 Connection.Response response = execute(detailsLink);
-                size = getSizeInKB(response.bodyAsBytes());
+                size = getSizeInKB(response);
                 description = getDetailedDescription(response);
 
                 //get the price information
@@ -85,7 +84,7 @@ public class SainsburysScraperService {
 
     // assumption that the first returned element is the description
     private String getDetailedDescription (Connection.Response response) throws  IOException{
-        Document doc = getDocument(response);
+        Document doc = getDocumentHelper(response);
         Element el = doc == null ? null : doc.select(PRODUCT_LINK_TEXT).first();
         return el == null ? null : el.ownText();
     }
@@ -105,19 +104,16 @@ public class SainsburysScraperService {
 
     }
 
-    private Document getDocument(String url) throws IOException {
-        return Jsoup.connect(url).get();
-    }
-
     private Document getDocument(Connection.Response response) throws IOException {
         return response.parse();
     }
 
-    private Connection.Response execute(String url) throws  IOException{
+    public Connection.Response execute(String url) throws  IOException{
         return Jsoup.connect(url).execute();
     }
 
-    private String getSizeInKB (byte[] bytes) {
+    public String getSizeInKB (Connection.Response response) {
+        byte [] bytes = response.bodyAsBytes();
         return bytes == null ? null : bytes.length/KB_BYTES + "kb";
     }
 
@@ -141,4 +137,16 @@ public class SainsburysScraperService {
     private Element getProductListElement(Document doc) {
        return doc.getElementById(PRODUCT_LISTER_ID);
     }
+
+    // helper class for testing purposes
+    public Document getDocumentHelper(String url) throws IOException {
+        return Jsoup.connect(url).get();
+    }
+
+    public Document getDocumentHelper(Connection.Response response) throws IOException {
+        return response.parse();
+    }
+
+
+
 }
